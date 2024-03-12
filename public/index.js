@@ -15,9 +15,13 @@ textArea.addEventListener("input", () => {
 
 function fillpuzzle(data) {
   let len = data.length < 81 ? data.length : 81;
-  for (let i = 0; i < len; i++) {
+  for (let i = 0; i < 81; i++) {
     let rowLetter = String.fromCharCode('A'.charCodeAt(0) + Math.floor(i / 9));
     let col = (i % 9) + 1; 
+    if (i > len - 1) {
+      document.getElementsByClassName(rowLetter + col)[0].innerText = " ";
+      continue;
+    }
     if (!data[i] || data[i] === ".") {
       document.getElementsByClassName(rowLetter + col)[0].innerText = " ";
       continue;
@@ -28,6 +32,7 @@ function fillpuzzle(data) {
 }
 
 async function getSolved() {
+  console.log('12356');
   const stuff = {"puzzle": textArea.value}
   const data = await fetch("/api/solve", {
     method: "POST",
@@ -37,7 +42,9 @@ async function getSolved() {
     },
     body: JSON.stringify(stuff)
   })
+  console.log(data,'data');
   const parsed = await data.json();
+  console.log(parsed,'parsed');
   if (parsed.error) {
     errorMsg.innerHTML = `<code>${JSON.stringify(parsed, null, 2)}</code>`;
     return
